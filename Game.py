@@ -3,9 +3,8 @@ import sys
 import random
 import math
 
-# Initialize Pygame and mixer for sound
+# Initialize Pygame
 pygame.init()
-pygame.mixer.init()
 
 # Constants
 SCREEN_WIDTH = 800
@@ -36,14 +35,6 @@ POWERUP_DURATION = 5000  # 5 seconds in milliseconds
 # Create the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Bulletstorm Blitz")
-
-# Load and set up sounds
-shoot_sound = pygame.mixer.Sound("shoot.wav")
-explosion_sound = pygame.mixer.Sound("explosion.wav")
-powerup_sound = pygame.mixer.Sound("powerup.wav")
-shoot_sound.set_volume(0.3)
-explosion_sound.set_volume(0.4)
-powerup_sound.set_volume(0.5)
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -118,7 +109,6 @@ class Player(pygame.sprite.Sprite):
             angle_offset = (i - (bullet_count-1)/2) * spread
             bullet = Bullet(self.rect.centerx, self.rect.centery, angle_offset)
             bullets.append(bullet)
-            shoot_sound.play()
         
         return bullets
 
@@ -310,7 +300,6 @@ while running:
         if enemy_hit:
             bullet.kill()
             enemy_hit.kill()
-            explosion_sound.play()
             player.score += 100 * player.multiplier
             player.combo_timer = current_time + 2000  # 2 second combo window
             player.multiplier = min(player.multiplier + 0.5, 4)  # Max 4x multiplier
@@ -318,7 +307,6 @@ while running:
     # Check for collisions between player and power-ups
     powerup_hit = pygame.sprite.spritecollideany(player, powerups_group)
     if powerup_hit:
-        powerup_sound.play()
         if powerup_hit.type == "rapid_fire":
             player.rapid_fire = True
             player.rapid_fire_timer = current_time + POWERUP_DURATION
